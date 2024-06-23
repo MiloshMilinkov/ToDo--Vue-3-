@@ -15,6 +15,10 @@ const createToDo = (todo) =>{
     isEditing: null,
   });
 }
+
+const toggleTodoComplete = (todoIndex) =>{
+  toDoList.value[todoIndex].isCompleted = !toDoList.value[todoIndex].isCompleted 
+}
 </script>
 
 <template>
@@ -22,7 +26,7 @@ const createToDo = (todo) =>{
     <h1>Create Todo</h1>
     <ToDoCreator @create-todo="createToDo" />
     <ul class="todo-list" v-if="toDoList.length > 0">
-      <ToDoItem v-for="todo in toDoList" :todo="todo" />
+      <ToDoItem v-for="(todo, index) in toDoList" :todo="todo" :index="index"  @toggle-complete="toggleTodoComplete"/>
     </ul>
     <p class="todos-msg" v-else>
       <Icon icon="noto-v1:sad-but-relieved-face"  width="22"></Icon>
