@@ -7,6 +7,18 @@ import {  ref } from 'vue';
 
 const toDoList = ref([]);
 
+const setToDoListLocalStorage = () =>{
+  localStorage.setItem("todoList", JSON.stringify(toDoList.value));
+
+}
+
+const getToDoListLocalStorage = () =>{
+  const savedToDoList = JSON.parse(localStorage.getItem("todoList"));
+  if (savedToDoList){
+    toDoList.value = savedToDoList;
+  }
+};
+
 const createToDo = (todo) =>{
   toDoList.value.push({
     id: uid(),
@@ -14,19 +26,31 @@ const createToDo = (todo) =>{
     isCompleted: null,
     isEditing: null,
   });
-}
+  setToDoListLocalStorage();
+};
 
 const toggleTodoComplete = (todoIndex) =>{
   toDoList.value[todoIndex].isCompleted = !toDoList.value[todoIndex].isCompleted;
+  setToDoListLocalStorage();
 }
 
 const toggleEditTodo = (todoIndex) =>{
   toDoList.value[todoIndex].isEditing = !toDoList.value[todoIndex].isEditing;
+  setToDoListLocalStorage();
 }
 
 const UpdateTodo = (toDoValue ,todoIndex) =>{
   toDoList.value[todoIndex].todo = toDoValue;
+  setToDoListLocalStorage();
 }
+
+const DeleteTodo = (todoId) =>{
+  toDoList.value = toDoList.value.filter((todo) => todo.id !== todoId)
+  setToDoListLocalStorage();
+}
+
+
+getToDoListLocalStorage();
 </script>
 
 <template>
@@ -35,12 +59,13 @@ const UpdateTodo = (toDoValue ,todoIndex) =>{
     <ToDoCreator @create-todo="createToDo" />
     <ul class="todo-list" v-if="toDoList.length > 0">
       <ToDoItem 
-        v-for="(todo, index) in toDoList" 
-        :todo="todo" 
-        :index="index"  
-        @toggle-complete="toggleTodoComplete"
-        @edit-todo="toggleEditTodo"
-        @update-todo="UpdateTodo" />
+        v-for = "(todo, index) in toDoList" 
+        :todo = "todo" 
+        :index = "index"  
+        @toggle-complete = "toggleTodoComplete"
+        @edit-todo = "toggleEditTodo"
+        @update-todo = "UpdateTodo" 
+        @delete-todo = "DeleteTodo"/>
     </ul>
     <p class="todos-msg" v-else>
       <Icon icon="noto-v1:sad-but-relieved-face"  width="22"></Icon>
