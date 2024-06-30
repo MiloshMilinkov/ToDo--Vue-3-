@@ -3,9 +3,15 @@ import ToDoCreator from '@/components/ToDoCreator.vue';
 import ToDoItem from '../components/ToDoItem.vue';
 import { Icon } from '@iconify/vue';
 import {uid} from "uid";
-import {  ref } from 'vue';
+import {  ref,watch } from 'vue';
 
 const toDoList = ref([]);
+watch(toDoList, () => {
+ setToDoListLocalStorage();
+},  {
+  deep: true,
+
+})
 
 const setToDoListLocalStorage = () =>{
   localStorage.setItem("todoList", JSON.stringify(toDoList.value));
@@ -26,27 +32,22 @@ const createToDo = (todo) =>{
     isCompleted: null,
     isEditing: null,
   });
-  setToDoListLocalStorage();
 };
 
 const toggleTodoComplete = (todoIndex) =>{
   toDoList.value[todoIndex].isCompleted = !toDoList.value[todoIndex].isCompleted;
-  setToDoListLocalStorage();
 }
 
 const toggleEditTodo = (todoIndex) =>{
   toDoList.value[todoIndex].isEditing = !toDoList.value[todoIndex].isEditing;
-  setToDoListLocalStorage();
 }
 
 const UpdateTodo = (toDoValue ,todoIndex) =>{
   toDoList.value[todoIndex].todo = toDoValue;
-  setToDoListLocalStorage();
 }
 
 const DeleteTodo = (todoId) =>{
   toDoList.value = toDoList.value.filter((todo) => todo.id !== todoId)
-  setToDoListLocalStorage();
 }
 
 
