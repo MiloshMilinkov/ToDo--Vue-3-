@@ -3,7 +3,7 @@ import ToDoCreator from '@/components/ToDoCreator.vue';
 import ToDoItem from '../components/ToDoItem.vue';
 import { Icon } from '@iconify/vue';
 import {uid} from "uid";
-import {  ref,watch } from 'vue';
+import {  ref, watch, computed } from 'vue';
 
 const toDoList = ref([]);
 watch(toDoList, () => {
@@ -12,6 +12,10 @@ watch(toDoList, () => {
   deep: true,
 
 })
+
+const toDoComleted = computed(() =>{
+  return toDoList.value.every((todo) =>todo.isCompleted);
+});
 
 const setToDoListLocalStorage = () =>{
   localStorage.setItem("todoList", JSON.stringify(toDoList.value));
@@ -71,6 +75,10 @@ getToDoListLocalStorage();
     <p class="todos-msg" v-else>
       <Icon icon="noto-v1:sad-but-relieved-face"  width="22"></Icon>
       <span> You have no todo's, why not make one?</span>
+    </p>
+    <p class="todos-msg" v-if="toDoComleted && toDoList.length > 0">
+      <Icon icon="noto-v1:party-popper"  width="22"></Icon>
+      <span> Good job, you have completed all your todos!</span>
     </p>
   </main>
 </template>
